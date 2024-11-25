@@ -11,11 +11,11 @@ RUN echo "postgres ALL=(root) NOPASSWD: /usr/bin/mkdir, /bin/chown, /usr/bin/ope
 # COPY custom-postgresql.conf /bitnami/postgresql/conf/postgresql.conf
 # # Copy custom configuration file
 
-COPY custom-postgresql.conf /etc/postgresql
+# COPY custom-postgresql.conf /etc/postgresql
 
 # Add init scripts while setting permissions
 COPY --chmod=755 init-ssl.sh /docker-entrypoint-initdb.d/init-ssl.sh
 COPY --chmod=755 wrapper.sh /usr/local/bin/wrapper.sh
 
 ENTRYPOINT ["wrapper.sh"]
-CMD ["postgres", "--port=5432", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+CMD ["postgres", "--port=5432", "-c", "max_connections=3000", "-c", "shared_buffers=6GB", "-c", "max_worker_processes=24"]
